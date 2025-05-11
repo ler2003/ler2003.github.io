@@ -1,0 +1,203 @@
+/* Reset & Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html, body {
+    min-height: 100%;
+    overflow-x: hidden;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    scroll-behavior: smooth;
+  }
+  
+  /* Navbar */
+  .navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: #ffffffee;
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid #e0e0e0;
+    z-index: 100;
+  }
+  
+  .nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+  }
+  
+  .logo {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1d3557;
+  }
+  
+  .menu a {
+    margin-left: 2rem;
+    text-decoration: none;
+    font-weight: 500;
+    color: #444;
+    transition: color 0.3s ease;
+  }
+  
+  .menu a:hover {
+    color: #e63946;
+  }
+  
+  /* Fullscreen Section */
+  .fullscreen-section {
+    height: 100vh;
+    width: 100%;
+    background: linear-gradient(135deg, #457b9d, #6abd9d);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 100px 2rem 2rem;
+    text-align: center;
+    color: #fff;
+    position: relative;
+  }
+  
+  /* Content */
+  .content-wrapper {
+    max-width: 800px;
+    z-index: 2;
+  }
+  
+  .name {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+  }
+  
+  .about {
+    font-size: 1.2rem;
+    line-height: 1.6;
+  }
+  
+  /* Geometric Shapes */
+  .shapes .shape {
+    position: absolute;
+    opacity: 0.1;
+    z-index: 1;
+  }
+  
+  .circle1 {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: #e63946;
+    top: 10%;
+    left: -60px;
+  }
+  
+  .circle2 {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    background: #1d3557;
+    bottom: -100px;
+    right: -100px;
+  }
+  
+  .triangle {
+    width: 0;
+    height: 0;
+    border-left: 100px solid transparent;
+    border-right: 100px solid transparent;
+    border-bottom: 180px solid #f1faee;
+    top: 60%;
+    left: 5%;
+    transform: rotate(-25deg);
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .name {
+      font-size: 2.5rem;
+    }
+  
+    .about {
+      font-size: 1rem;
+      padding: 0 1rem;
+    }
+  
+    .menu a {
+      margin-left: 1rem;
+      font-size: 0.95rem;
+    }
+  }
+  
+  /* Scrollable resume section with color enhancements */
+  .resume-section {
+    padding: 120px 2rem 4rem;
+    background: linear-gradient(135deg, #457b9d, #6abd9d);
+    color: #ffffff;
+    min-height: 100vh;
+  }
+  
+  .resume-container {
+    max-width: 1000px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+  
+  .resume-block {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 2rem 2.5rem;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+  }
+  
+  .resume-block h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #ffffff;
+  }
+  
+  .resume-block h3 {
+    font-size: 1.2rem;
+    margin-top: 1.5rem;
+    color: #f1faee;
+  }
+  
+  .resume-block p,
+  .resume-block li {
+    color: #f8f9fa;
+  }
+  
+  .skills-grid strong {
+    color: #f1faee;
+  }
+  
+  .skills-grid li {
+    color: #e3eaf0;
+  }
+  
+  /* Responsive Resume Tuning */
+  @media (max-width: 768px) {
+    .resume-block {
+      padding: 1.5rem;
+    }
+  
+    .resume-block h2 {
+      font-size: 1.5rem;
+    }
+  
+    .resume-block h3 {
+      font-size: 1.1rem;
+    }
+  
+    .skills-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  

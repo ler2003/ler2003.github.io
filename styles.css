@@ -57,10 +57,11 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    padding: 100px 2rem 2rem;
+    padding: 100px 2rem 0;
     text-align: center;
     color: #fff;
     position: relative;
+    overflow: hidden;
   }
   
   /* Content */
@@ -200,8 +201,9 @@
       grid-template-columns: 1fr;
     }
   }
+  
 
-/* === Projects Page === */
+  /* === Projects Page === */
 
 .projects-section {
   padding: 120px 2rem 4rem;
@@ -259,7 +261,7 @@
   color: #1d3557;
 }
 
-/* Responsive Tuning */
+
 @media (max-width: 768px) {
   .project-block {
     padding: 2rem 1.5rem;
@@ -273,5 +275,3 @@
     font-size: 1rem;
   }
 }
-
-  

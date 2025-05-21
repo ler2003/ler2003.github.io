@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Word Game</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      background: linear-gradient(135deg, #457b9d, #6abd9d);
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    #board {
+      display: grid;
+      grid-template-columns: repeat(10, 40px);
+      gap: 5px;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      user-select: none;
+    }
+
+    .letter {
+      background: #ffffff33;
+      border-radius: 5px;
+      padding: 10px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .selected {
+      background: #fff;
+      color: #457b9d;
+    }
+
+    .btn {
+      background: #fff;
+      color: #457b9d;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+
+    .btn:hover {
+      background: #eaf3f9;
+    }
+
+    #score, #timer {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Word Builder</h1>
+  <div id="board"></div>
+  <button class="btn" onclick="submitWord()">Submit Word</button>
+  <div id="score">Score: 0</div>
+  <div id="timer">Time: 120</div>
+
+  <script>
+    const boardSize = 10;
+    let score = 0;
+    let timeLeft = 120;
+    let wordList = [];
+    let isMouseDown = false;
+    let selectedLetters = [];
+    let selectedElements = [];
+
+    function generateBoard() {
+      const board = document.getElementById('board');
+      board.innerHTML = '';
+      for (let i = 0; i < boardSize * boardSize; i++) {
+        const letter = document.createElement('div');
+        letter.classList.add('letter');
+        letter.innerText = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+        letter.dataset.index = i;
+        letter.addEventListener('mousedown', selectStart);
+        letter.addEventListener('mouseenter', selectHover);
+        letter.addEventListener('mouseup', selectEnd);
+        board.appendChild(letter);
+      }
+    }
+
+    function startTimer() {
+      const timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timer').innerText = `Time: ${timeLeft}`;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          alert('Time up! Final score: ' + score);
+        }
+      }, 1000);
+    }
+
+    function selectStart(e) {
+      isMouseDown = true;
+      selectLetter(e.target);
+    }
+
+    function selectHover(e) {
+      if (isMouseDown) {
+        selectLetter(e.target);
+      }
+    }
+
+    function selectEnd() {
+      isMouseDown = false;
+    }
+
+    function selectLetter(el) {
+      if (!selectedElements.includes(el)) {
+        el.classList.add('selected');
+        selectedElements.push(el);
+        selectedLetters.push(el.innerText.toLowerCase());
+      }
+    }
+
+    function submitWord() {
+      const word = selectedLetters.join('');
+      if (wordList.includes(word)) {
+        score += word.length * 10;
+        document.getElementById('score').innerText = `Score: ${score}`;
+        // Remove selected letters from board
+        selectedElements.forEach(el => {
+          el.innerText = '';
+          el.classList.remove('selected');
+        });
+      } else {
+        alert('Invalid word!');
+        selectedElements.forEach(el => el.classList.remove('selected'));
+      }
+      selectedLetters = [];
+      selectedElements = [];
+    }
+
+    window.addEventListener('mouseup', () => isMouseDown = false);
+
+    window.onload = () => {
+    generateBoard();
+    startTimer();
+
+    fetch('words.txt')
+        .then(response => response.text())
+        .then(data => {
+        wordList = data
+            .split('\n')
+            .map(w => w.trim().toLowerCase())
+            .filter(w => w.length >= 3 && w.length <= 6);
+        console.log('Loaded words:', wordList.length);
+        })
+        .catch(err => console.error('Error loading dictionary:', err));
+    };
+
+  </script>
+</body>
+</html>

@@ -29,13 +29,6 @@
       padding: 10px;
       font-size: 1.2rem;
       font-weight: bold;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .selected {
-      background: #fff;
-      color: #457b9d;
     }
 
     .btn {
@@ -46,7 +39,7 @@
       border-radius: 6px;
       padding: 0.5rem 1rem;
       cursor: pointer;
-      margin-top: 1rem;
+      margin-left: 0.5rem;
     }
 
     .btn:hover {
@@ -62,6 +55,7 @@
 <body>
   <h1>Word Builder</h1>
   <div id="board"></div>
+  <input type="text" id="word-input" placeholder="Type your word" />
   <button class="btn" onclick="submitWord()">Submit Word</button>
   <div id="score">Score: 0</div>
   <div id="timer">Time: 120</div>
@@ -71,9 +65,6 @@
     let score = 0;
     let timeLeft = 120;
     let wordList = [];
-    let isMouseDown = false;
-    let selectedLetters = [];
-    let selectedElements = [];
 
     function generateBoard() {
       const board = document.getElementById('board');
@@ -82,10 +73,6 @@
         const letter = document.createElement('div');
         letter.classList.add('letter');
         letter.innerText = String.fromCharCode(65 + Math.floor(Math.random() * 26));
-        letter.dataset.index = i;
-        letter.addEventListener('mousedown', selectStart);
-        letter.addEventListener('mouseenter', selectHover);
-        letter.addEventListener('mouseup', selectEnd);
         board.appendChild(letter);
       }
     }
@@ -101,65 +88,30 @@
       }, 1000);
     }
 
-    function selectStart(e) {
-      isMouseDown = true;
-      selectLetter(e.target);
-    }
-
-    function selectHover(e) {
-      if (isMouseDown) {
-        selectLetter(e.target);
-      }
-    }
-
-    function selectEnd() {
-      isMouseDown = false;
-    }
-
-    function selectLetter(el) {
-      if (!selectedElements.includes(el)) {
-        el.classList.add('selected');
-        selectedElements.push(el);
-        selectedLetters.push(el.innerText.toLowerCase());
-      }
-    }
-
     function submitWord() {
-      const word = selectedLetters.join('');
+      const input = document.getElementById('word-input');
+      const word = input.value.toLowerCase();
       if (wordList.includes(word)) {
         score += word.length * 10;
         document.getElementById('score').innerText = `Score: ${score}`;
-        // Remove selected letters from board
-        selectedElements.forEach(el => {
-          el.innerText = '';
-          el.classList.remove('selected');
-        });
+        input.value = '';
       } else {
         alert('Invalid word!');
-        selectedElements.forEach(el => el.classList.remove('selected'));
+        input.value = '';
       }
-      selectedLetters = [];
-      selectedElements = [];
     }
 
-    window.addEventListener('mouseup', () => isMouseDown = false);
-
     window.onload = () => {
-    generateBoard();
-    startTimer();
-
-    fetch('words.txt')
-        .then(response => response.text())
+      generateBoard();
+      startTimer();
+      fetch('words.txt')
+        .then(res => res.text())
         .then(data => {
-        wordList = data
-            .split('\n')
-            .map(w => w.trim().toLowerCase())
-            .filter(w => w.length >= 3 && w.length <= 6);
-        console.log('Loaded words:', wordList.length);
+          wordList = data.split('\n').map(w => w.trim().toLowerCase());
+          console.log('Words loaded:', wordList.length);
         })
-        .catch(err => console.error('Error loading dictionary:', err));
+        .catch(err => console.error('Error loading words.txt:', err));
     };
-
   </script>
 </body>
 </html>

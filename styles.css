@@ -1,4 +1,4 @@
-/* Reset & Base */
+
 * {
     margin: 0;
     padding: 0;
@@ -12,7 +12,6 @@
     scroll-behavior: smooth;
   }
   
-  /* Navbar */
   .navbar {
     position: fixed;
     top: 0;
@@ -48,7 +47,6 @@
     color: #e63946;
   }
   
-  /* Fullscreen Section */
   .fullscreen-section {
     height: 100vh;
     width: 100%;
@@ -64,7 +62,6 @@
     overflow: hidden;
   }
   
-  /* Content */
   .content-wrapper {
     max-width: 800px;
     z-index: 2;
@@ -81,7 +78,6 @@
     line-height: 1.6;
   }
   
-  /* Geometric Shapes */
   .shapes .shape {
     position: absolute;
     opacity: 0.1;
@@ -117,24 +113,8 @@
     transform: rotate(-25deg);
   }
   
-  /* Responsive */
-  @media (max-width: 768px) {
-    .name {
-      font-size: 2.5rem;
-    }
-  
-    .about {
-      font-size: 1rem;
-      padding: 0 1rem;
-    }
-  
-    .menu a {
-      margin-left: 1rem;
-      font-size: 0.95rem;
-    }
-  }
-  
-  /* Scrollable resume section with color enhancements */
+
+  /*resume*/
   .resume-section {
     padding: 120px 2rem 4rem;
     background: linear-gradient(135deg, #457b9d, #6abd9d);
@@ -183,27 +163,8 @@
     color: #e3eaf0;
   }
   
-  /* Responsive Resume Tuning */
-  @media (max-width: 768px) {
-    .resume-block {
-      padding: 1.5rem;
-    }
-  
-    .resume-block h2 {
-      font-size: 1.5rem;
-    }
-  
-    .resume-block h3 {
-      font-size: 1.1rem;
-    }
-  
-    .skills-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-  
 
-  /* === Projects Page === */
+  /*projects*/
 
 .projects-section {
   padding: 120px 2rem 4rem;
@@ -230,6 +191,8 @@
   padding: 2.5rem 3rem;
   border-radius: 16px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  margin-bottom: 40px;
+  padding: 20px;
 }
 
 .project-block h2 {
@@ -261,7 +224,7 @@
   color: #1d3557;
 }
 
-
+/*responsive*/
 @media (max-width: 768px) {
   .project-block {
     padding: 2rem 1.5rem;
@@ -274,4 +237,35 @@
   .project-block p {
     font-size: 1rem;
   }
+
+  .name {
+    font-size: 2.5rem;
+  }
+  
+  .about {
+    font-size: 1rem;
+    padding: 0 1rem;
+  }
+  
+  .menu a {
+    margin-left: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .resume-block {
+    padding: 1.5rem;
+  }
+  
+  .resume-block h2 {
+    font-size: 1.5rem;
+  }
+  
+   .resume-block h3 {
+    font-size: 1.1rem;
+  }
+  
+  .skills-grid {
+    grid-template-columns: 1fr;
+  }
+  
 }

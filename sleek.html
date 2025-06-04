@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NebulaSolutions | Home</title>
+  <link rel="stylesheet" href="sleek.css" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="logo">NebulaSolutions</div>
+      <nav class="menu">
+        <div class="theme-switch-wrapper">
+            <label class="theme-switch" for="theme-toggle">
+                <input type="checkbox" id="theme-toggle" />
+                <span class="slider"></span>
+            </label>
+        </div>
+        <a href="#about">About</a>
+        <a href="#industries">Industries</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Nebula Staffing Solutions</h1>
+      <p>Top talent for top companies.</p>
+      <a href="#contact" class="cta-button">Get Started</a>
+    </div>
+  </section>
+
+  <section class="features" id="solutions">
+    <div class="feature">
+      <h2>Healthcare</h2>
+      <p>Recruit experienced healthcare professionals near you.</p>
+    </div>
+    <div class="feature">
+      <h2>Information Technology</h2>
+      <p>Find IT professionals to help take your company to the next level.</p>
+    </div>
+    <div class="feature">
+      <h2>Finance</h2>
+      <p>Discover top auditors to keep your business on the right track.</p>
+    </div>
+  </section>
+
+  <section class="about" id="about">
+    <h2>About NebulaSolutions</h2>
+    <p>We are a Pittsburgh-local staffing agency aimed towards connecting companies with the top talent in the area using unique, comprehensive technology.</p>
+  </section>
+
+  <footer class="footer" id="contact">
+    <div class="footer-content">
+      <p>&copy; 2025 NebulaSolutions. For sample purposes only.</p>
+      <a href="mailto:contact@nebluasolutions.com">contact@nebluasolutions.com</a>
+    </div>
+  </footer>
+</body>
+</html>
+
+<script>
+  const toggle = document.getElementById('theme-toggle');
+  const body = document.body;
+
+  if (localStorage.getItem('theme') === 'dark') {
+    body.classList.add('dark-mode');
+    toggle.checked = true;
+  }
+
+  toggle.addEventListener('change', () => {
+    body.classList.toggle('dark-mode');
+    if (body.classList.contains('dark-mode')) {
+      localStorage.setItem('theme', 'dark');
+    } else {
+      localStorage.setItem('theme', 'light');
+    }
+  });
+</script>

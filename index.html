@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Lauren Rose | Developer</title>
+  <title>Lauren Rose | Web Developer</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -17,21 +17,49 @@
     </div>
   </header>
 
-  <main class="fullscreen-section">
-    <div class="content-wrapper">
-      <h1 class="name">Lauren Rose</h1>
-      <p class="about">
-        I'm a web developer focused on UI/UX design and frontend development. Skilled in HTML/CSS, Javascript, 
-        and React.js, I combine thoughtful design with practical engineering to create
-        seamless digital experiences. I'm currently seeking a full-time role in front-end or UI/UX
-        development.
-      </p>
-    </div>
-    <div class="shapes">
-      <div class="shape circle1"></div>
-      <div class="shape circle2"></div>
-      <div class="shape triangle"></div>
-    </div>
-  </main>
+<main class="fullscreen-section">
+  <div class="content-wrapper">
+    <h1 class="name">Lauren Rose</h1>
+    <p class="about">
+      I'm a web developer focused on UI/UX design and frontend development. Skilled in HTML/CSS, Javascript, 
+      and React.js, I combine thoughtful design with practical engineering to create
+      seamless digital experiences. I'm currently seeking a full-time role in front-end or UI/UX
+      development.
+    </p>
+
+    <form id="contact-form" class="contact-form">
+      <h2>Contact Me</h2>
+      <input type="email" name="from_email" placeholder="Your Email" required />
+      <input type="text" name="subject" placeholder="Subject" required />
+      <textarea name="message" placeholder="Your Message" rows="6" required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+  </div>
+
+  <div class="shapes">
+    <div class="shape circle1"></div>
+    <div class="shape circle2"></div>
+    <div class="shape triangle"></div>
+  </div>
+
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <script>
+    (function () {
+      emailjs.init("SRrjEFFiDLVVUjAEy");
+    })();
+
+    document.getElementById('contact-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      emailjs.sendForm('service_330zbou', 'template_sexmtny', this)
+        .then(function () {
+          alert('Message sent!');
+          document.getElementById('contact-form').reset();
+        }, function (error) {
+          alert('Failed to send message: ' + JSON.stringify(error));
+        });
+    });
+  </script>
+</main>
+
 </body>
 </html>

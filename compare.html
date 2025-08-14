@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Gendered Violence Comparison</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background: #f9f9f9;
+  }
+  h1 {
+    margin-bottom: 20px;
+  }
+  select, button {
+    margin: 5px;
+    padding: 5px;
+    font-size: 14px;
+  }
+  #result {
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 18px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Comparison Tool</h1>
+<p>
+  What is the 
+  <select id="scopeSelect">
+    <option value="country">Country</option>
+    <option value="UN_Region">Region</option>
+    <option value="Majority_Religion">Religion</option>
+  </select>
+  with the 
+  <select id="directionSelect">
+    <option value="lowest">Lowest</option>
+    <option value="highest">Highest</option>
+  </select>
+  <select id="statSelect"></select>
+  ?
+</p>
+<button id="findBtn">Find</button>
+
+<div id="result"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script>
+const csvData = `country,UN_Region,Gender_Inequality_Index,Global_Gender_Gap_Index,Female_Population,Total_Population,Lifetime_Non-Partner_sexual_Violence,Physical_Partner_Violence_in_12_months,Lifetime_Physical_Partner_Violence,Majority_Religion,iso_a3
+Afghanistan,Asia,168,146,"19,845,000","40,099,000",NaN,46.1,50.8,Islam,AFG
+Albania,Europe,35,18,"1,429,000","2,855,000",1.3,8.2,21,Islam,ALB
+Algeria,Africa,114,140,"21,681,000","44,178,000",NaN,NaN,NaN,Islam,DZA
+Andorra,Europe,NaN,NaN,"39,000","79,000",NaN,NaN,NaN,Christianity,AND
+Angola,Africa,139,125,"17,452,000","34,504,000",NaN,25.9,34.8,Christianity,AGO
+Antigua and Barbuda,Americas,63,NaN,"49,000","93,000",NaN,NaN,NaN,Christianity,ATG
+Argentina,Americas,70,33,"22,862,000","45,277,000",12.1,2.7,26.9,Christianity,ARG
+Armenia,Asia,49,89,"1,534,000","2,791,000",NaN,3.5,8.2,Christianity,ARM
+Australia,Oceania,20,43,"13,053,000","25,921,000",10,2.2,22.8,Christianity,AUS
+Austria,Europe,10,21,"4,531,000","8,922,000",4,3,13,Christianity,AUT
+Azerbaijan,Asia,80,101,"5,224,000","10,313,000",NaN,9.8,13.5,Islam,AZE
+Bahamas,Americas,81,58,"213,000","408,000",NaN,NaN,NaN,Christianity,BHS
+Bahrain,Asia,44,131,"555,000","1,463,000",NaN,NaN,NaN,Islam,BHR
+Bangladesh,Asia,125,71,"85,358,000","169,356,000",3,26.9,54.2,Islam,BGD
+Barbados,Americas,76,30,"23,153,000","63,588,000",NaN,NaN,NaN,Christianity,BRB
+Belarus,Europe,27,36,"5,163,000","9,578,000",NaN,NaN,NaN,Christianity,BLR
+Belgium,Europe,8,14,"5,877,000","11,611,000",8,6,24,Christianity,BEL
+Belize,Americas,110,95,"199,000","400,000",NaN,NaN,22.2,Christianity,BLZ
+Benin,Africa,153,138,"6,487,000","12,997,000",2.2,33.3,44.4,Christianity,BEN
+Bhutan,Asia,71,126,"366,000","777,000",5.8,6.1,15.1,Buddhism,BTN
+Bolivia (Plurinational State of),Americas,107,51,"6,021,000","12,079,000",NaN,27.1,58.5,Christianity,BOL
+Bosnia and Herzegovina,Europe,43,73,"1,670,000","3,185,000",1,3.4,11,Islam,BIH
+Botswana,Africa,127,66,"1,311,000","2,588,000",NaN,NaN,NaN,Christianity,BWA
+Brazil,Americas,96,94,"109,035,000","214,326,000",NaN,3.1,16.7,Christianity,BRA
+Brunei Darussalam,Asia,66,104,"215,000","445,000",NaN,NaN,NaN,Islam,BRN
+Bulgaria,Europe,53,42,"3,547,000","6,886,000",6,6,23,Christianity,BGR
+Burkina Faso,Africa,146,115,"11,090,000","22,101,000",NaN,9.3,11.5,Islam,BFA
+Burundi,Africa,132,24,"6,319,000","12,551,000",NaN,27.9,48.5,Christianity,BDI
+Cabo Verde,Africa,77,25,"296,000","588,000",NaN,7.8,12.6,Christianity,CPV
+Cambodia,Asia,136,45,"8,377,000","16,589,000",3.8,7.7,20.9,Buddhism,KHM
+Cameroon,Africa,148,98,"13,634,000","27,199,000",NaN,21.5,37.3,Christianity,CMR
+Canada,Americas,18,97,"19,195,000","38,155,000",NaN,1.1,NaN,Christianity,CAN
+Central African Republic,Africa,NaN,NaN,"2,729,000","5,457,000",NaN,26.3,29.8,Christianity,CAF
+Chad,Africa,169,142,"8,556,000","17,180,000",NaN,17.5,28.6,Islam,TCD
+Chile,Americas,33,47,"9,888,000","19,658,000",NaN,NaN,NaN,Christianity,CHL
+China,Asia,41,102,"697,362,000","1,422,585,000",NaN,NaN,NaN,Folk,CHN
+Colombia,Americas,98,75,"26,101,000","51,517,000",NaN,18.3,33.3,Christianity,COL
+Comoros,Africa,132,134,"409,000","822,000",1.5,5.2,8.3,Islam,COM
+Congo,Africa,151,,"2,921,000","5,836,000",NaN,NaN,NaN,Christianity,COG
+Costa Rica,Americas,55,12,"2,575,000","5,154,000",NaN,7.8,35.9,Christianity,CRI
+Croatia,Europe,25,45,"2,083,000","4,060,000",3,3,13,Christianity,HRV
+Cuba,Americas,75,39,"5,667,000","11,256,000",NaN,NaN,NaN,Christianity,CUB
+Cyprus,Asia,64,76,"621,000","1,244,000",2,3,15,Christianity,CYP
+Czechia,Europe,32,133,"5,334,000","10,511,000",4,4,21,None,CZE
+Cote d'Ivoire,Africa,159,93,"13,601,000","27,478,000",NaN,22,25.9,Islam,CIV
+Democratic People's Republic of Korea,Asia,NaN,NaN,"13,128,000","25,972,000",NaN,NaN,NaN,None,PRK
+Democratic Republic of the Congo,Africa,162,144,"48,319,000","95,894,000",NaN,36.8,50.7,Christianity,COD
+Denmark,Europe,1,32,"2,942,000","5,854,000",11,4,32,Christianity,DNK
+Djibouti,Africa,122,,"557,000","1,106,000",NaN,NaN,NaN,Islam,DJI
+Dominica,Americas,NaN,NaN,"36,000","72,000",NaN,NaN,NaN,Christianity,DMA
+Dominican Republic,Americas,106,84,"5,536,000","11,118,000",NaN,16,28.5,Christianity,DOM
+Ecuador,Americas,88,41,"8,911,000","17,798,000",NaN,10.8,40.4,Christianity,ECU
+Egypt,Africa,101,129,"54,002,000","109,262,000",NaN,14,25.6,Islam,EGY
+El Salvador,Americas,92,59,"3,312,000","6,309,000",Official Statistics Not Available,20,47,Christianity,SLV
+Equatorial Guinea,Africa,NaN,NaN,"771,000","1,634,000",NaN,43.6,56.9,Christianity,GNQ
+Eritrea,Africa,NaN,NaN,"1,834,000","3,620,000",NaN,NaN,NaN,Christianity,ERI
+Estonia,Europe,23,52,"699,000","1,329,000",9,2,20,None,EST
+Eswatini,Africa,124,58,"600,000","1,192,000",NaN,NaN,NaN,Christianity,SWZ
+Ethiopia,Africa,131,74,"59,840,000","120,283,000",NaN,19.8,28,Christianity,ETH
+Fiji,Oceania,85,107,"461,000","925,000",8.5,23.7,64.1,Christianity,FJI
+Finland,Europe,6,2,"2,801,000","5,536,000",11,5,30,Christianity,FIN
+France,Europe,11,15,"33,336,000","64,531,000",9,5,26,Christianity,FRA
+Gabon,Africa,135,,"1,149,000","2,341,000",5,31.5,48.6,Christianity,GAB
+Gambia,Africa,154,121,"1,327,000","2,640,000",NaN,10.4,33.5,Islam,GMB
+Georgia,Asia,66,55,"1,991,000","3,758,000",1.5,0.9,7.7,Christianity,GEO
+Germany,Europe,21,10,"42,255,000","83,409,000",7,3,22,Christianity,DEU
+Ghana,Africa,138,108,"16,910,000","33,788,000",6.8,9.2,27.7,Christianity,GHA
+Greece,Europe,34,100,"5,328,000","10,445,000",1,6,19,Christianity,GRC
+Grenada,Americas,58,,"62,000","125,000",NaN,NaN,NaN,Christianity,GRD
+Guatemala,Americas,121,113,"8,892,000","17,608,000",NaN,8.5,21.2,Christianity,GTM
+Guinea,Africa,163,118,"6,846,000","13,532,000",NaN,NaN,NaN,Islam,GIN
+Guinea-Bissau,Africa,166,NaN,"1,044,000","2,061,000",NaN,NaN,NaN,Islam,GNB
+Guyana,Americas,109,35,"411,000","805,000",NaN,NaN,NaN,Christianity,GUY
+Haiti,Americas,165,NaN,"5,775,000","11,448,000",NaN,13.9,26,Christianity,HTI
+Honduras,Americas,112,82,"5,088,000","10,278,000",NaN,6.8,27.8,Christianity,HND
+Hungary,Europe,54,88,"5,056,000","9,710,000",3,6,21,Christianity,HUN
+Iceland,Europe,7,1,"181,000","370,000",NaN,1.8,22.4,Christianity,ISL
+India,Asia,102,135,"681,060,000","1,407,564,000",Official Statistics Not Available,24,29.3,Hinduism,IND
+Indonesia,Asia,108,92,"139,934,000","281,190,000",15.4,6.6,24.1,Islam,IDN
+Iran (Islamic Republic of),Asia,123,143,"43,497,000","87,923,000",NaN,NaN,NaN,Islam,IRN
+Iraq,Asia,148,154,"21,736,000","43,534,000",NaN,NaN,NaN,Islam,IRQ
+Ireland,Europe,19,9,"2,516,000","4,987,000",5,3,15,Christianity,IRL
+Israel,Asia,27,60,"4,463,000","8,900,000",NaN,NaN,NaN,Judaism,ISR
+Italy,Europe,15,63,"30,367,000","59,240,000",17.5,2,13.6,Christianity,ITA
+Jamaica,Americas,88,38,"1,425,000","2,828,000",23,7,27.8,Christianity,JAM
+Japan,Asia,22,116,"64,045,000","124,613,000",NaN,NaN,NaN,Shinto,JPN
+Jordan,Asia,111,122,"5,368,000","11,148,000",NaN,13.8,18.9,Islam,JOR
+Kazakhstan,Asia,50,65,"9,966,000","19,196,000",1.5,4.7,16.5,Islam,KAZ
+Kenya,Africa,143,57,"26,726,000","53,006,000",NaN,25.5,40.7,Christianity,KEN
+Kiribati,Oceania,,NaN,"66,000","129,000",10.3,43.4,61,Christianity,KIR
+Kuwait,Asia,51,130,"1,659,000","4,250,000",NaN,NaN,NaN,Islam,KWT
+Kyrgyzstan,Asia,83,86,"3,322,000","6,528,000",0.1,17.1,26.6,Islam,KGZ
+Lao People's Democratic Republic,Asia,117,53,"3,682,000","7,425,000",5.3,6,15.3,Buddhism,LAO
+Latvia,Europe,38,26,"1,006,000","1,874,000",7,5,32,Christianity,LVA
+Lebanon,Asia,91,119,"2,879,000","5,593,000",NaN,NaN,NaN,Islam,LBN
+Lesotho,Africa,144,87,"1,156,000","2,281,000",NaN,NaN,NaN,Christianity,LSO
+Liberia,Africa,167,78,"2,608,000","5,193,000",NaN,34.8,49.3,Christianity,LBR
+Libya,Africa,65,NaN,"3,326,000","6,735,000",NaN,NaN,NaN,Islam,LBY
+Liechtenstein,Europe,,NaN,"20,000","39,000",NaN,NaN,NaN,Christianity,LIE
+Lithuania,Europe,24,11,"1,479,000","2,787,000",5,4,24,Christianity,LTU
+Luxembourg,Europe,17,46,"318,000","639,000",8,3,22,Christianity,LUX
+Madagascar,Africa,156,48,"14,425,000","28,916,000",NaN,NaN,NaN,Christianity,MDG
+Malawi,Africa,155,132,"10,219,000","19,890,000",NaN,24.3,37.5,Christianity,MWI
+Malaysia,Asia,47,103,"16,407,000","33,574,000",NaN,NaN,NaN,Islam,MYS
+Maldives,Asia,79,117,"221,000","521,000",NaN,5.6,16.3,Islam,MDV
+Mali,Africa,164,141,"10,844,000","21,905,000",NaN,20.9,39.1,Islam,MLI
+Malta,Europe,36,85,"253,000","527,000",5,4,15,Christianity,MLT
+Marshall Islands,Oceania,,NaN,"21,000","42,000",13,18.2,50.9,Christianity,MHL
+Mauritania,Africa,161,146,"2,354,000","4,615,000",NaN,6.4,9.3,Islam,MRT
+Mauritius,Africa,87,105,"658,000","1,299,000",NaN,NaN,NaN,Hinduism,MUS
+Mexico,Americas,88,31,"64,849,000","126,705,000",47.6,7.5,24.6,Christianity,MEX
+Micronesia (Federated States of),Oceania,NaN,NaN,"56,000","113,000",8,24.1,32.8,Christianity,FSM
+Monaco,Europe,NaN,NaN,"19,000","37,000",NaN,NaN,NaN,Christianity,MCO
+Mongolia,Asia,72,70,"1,686,000","3,348,000",14,12.7,31.2,Buddhism,MNG
+Montenegro,Europe,40,54,"322,000","628,000",1,4.8,7.3,Christianity,MNE
+Morocco,Africa,113,136,"18,411,000","37,077,000",NaN,14.2,NaN,Islam,MAR
+Mozambique,Africa,120,34,"16,340,000","32,077,000",NaN,15.5,21.7,Christianity,MOZ
+Myanmar,Asia,118,106,"27,015,000","53,798,000",NaN,11,17.3,Buddhism,MMR
+Namibia,Africa,116,8,"1,309,000","2,530,000",NaN,20.2,26.7,Christianity,NAM
+Nauru,Oceania,NaN,NaN,"6,000","13,000",47.3,22.1,48.1,Christianity,NRU
+Nepal,Asia,125,96,"15,664,000","30,035,000",NaN,11.2,25,Hinduism,NPL
+Netherlands (Kingdom of the),Europe,5,28,"8,805,000","17,502,000",12,5,25,Christianity,NLD
+New Zealand,Oceania,30,4,"2,587,000","5,130,000",NaN,NaN,NaN,Christianity,NZL
+Nicaragua,Americas,103,7,"3,475,000","6,851,000",NaN,7.5,22.5,Christianity,NIC
+Niger,Africa,160,128,"12,444,000","25,253,000",NaN,NaN,NaN,Islam,NER
+Nigeria,Africa,171,123,"105,574,000","213,401,000",NaN,13.8,22.3,Islam,NGA
+North Macedonia,Europe,37,69,"1,055,000","2,103,000",2,3.1,10,Christianity,MKD
+Norway,Europe,2,3,"2,677,000","5,403,000",NaN,6,27,Christianity,NOR
+Oman,Asia,57,139,"1,759,000","4,520,000",NaN,NaN,NaN,Islam,OMN
+Pakistan,Asia,145,145,"114,586,000","231,402,000",NaN,14.5,24.5,Islam,PAK
+Palau,Oceania,NaN,NaN,"9,000","18,000",15.1,8.4,25.2,Christianity,PLW
+Panama,Americas,94,40,"2,175,000","4,351,000",NaN,10.1,14.4,Christianity,PAN
+Papua New Guinea,Oceania,156,135,"4,812,000","9,949,000",NaN,47.6,58.3,Christianity,PNG
+Paraguay,Americas,104,80,"3,339,000","6,704,000",NaN,8,20.4,Christianity,PRY
+Peru,Americas,83,37,"17,020,000","33,715,000",NaN,10.6,31.2,Christianity,PER
+Philippines,Asia,86,19,"56,063,000","113,880,000",NaN,5.5,14.8,Christianity,PHL
+Poland,Europe,29,77,"19,783,000","38,308,000",2,2,13,Christianity,POL
+Portugal,Europe,26,29,"5,435,000","10,290,000",1,5,19,Christianity,PRT
+Qatar,Asia,52,137,"735,000","2,688,000",NaN,NaN,NaN,Islam,QAT
+Republic of Korea,Asia,12,99,"25,945,000","51,830,000",NaN,NaN,NaN,Christianity,KOR
+Republic of Moldova,Europe,42,16,"1,608,000","3,062,000",4,9.4,34,Christianity,MDA
+Romania,Europe,59,90,"9,984,000","19,329,000",2,6,24,Christianity,ROU
+Russian Federation,Europe,45,81,"77,710,000","145,103,000",NaN,NaN,NaN,Christianity,RUS
+Rwanda,Africa,99,6,"7,152,000","14,415,000",NaN,23.8,41.5,Christianity,RWA
+Saint Kitts and Nevis,Americas,NaN,NaN,"25,000","48,000",NaN,NaN,NaN,Christianity,KNA
+Saint Lucia,Americas,82,NaN,"91,000","180,000",NaN,NaN,NaN,Christianity,LCA
+Saint Vincent and the Grenadines,Americas,NaN,NaN,"51,000","104,000",NaN,NaN,NaN,Christianity,VCT
+Samoa,Oceania,105,NaN,"107,000","219,000",9.7,26.8,37.5,Christianity,WSM
+San Marino,Europe,NaN,NaN,"17,000","34,000",NaN,NaN,NaN,Christianity,SMR
+Sao Tome and Principe,Africa,130,NaN,"112,000","223,000",NaN,26.3,27.9,Christianity,STP
+Saudi Arabia,Asia,61,127,"15,184,000","35,950,000",NaN,NaN,NaN,Islam,SAU
+Senegal,Africa,127,112,"8,580,000","16,877,000",NaN,12.2,21.5,Islam,SEN
+Serbia,Europe,38,23,"3,557,000","6,773,000",2,3.4,17,Christianity,SRB
+Seychelles,Africa,NaN,NaN,"50,000","106,000",NaN,NaN,NaN,Christianity,SYC
+Sierra Leone,Africa,152,109,"4,202,000","8,421,000",NaN,40,53,Islam,SLE
+Singapore,Asia,8,49,"2,834,000","5,941,000",NaN,0.9,6.1,Buddhism,SGP
+Slovakia,Europe,48,67,"2,788,000","5,448,000",4,6,23,Christianity,SVK
+Slovenia,Europe,14,39,"1,054,000","2,119,000",4,2,13,Christianity,SVN
+Solomon Islands,Oceania,118,NaN,"346,000","708,000",18,41.8,63.5,Christianity,SLB
+Somalia,Africa,170,,"8,510,000","17,066,000",NaN,NaN,NaN,Islam,SOM
+South Africa,Africa,95,20,"30,498,000","59,392,000",NaN,8.7,21.3,Christianity,ZAF
+South Sudan,Africa,NaN,NaN,"5,428,000","10,748,000",NaN,NaN,NaN,Christianity,SSD
+Spain,Europe,15,17,"24,215,000","47,487,000",6.5,"1,8","14,2",Christianity,ESP
+Sri Lanka,Asia,93,110,"11,283,000","21,773,000",4.1,6,20.4,Buddhism,LKA
+Sudan,Africa,158,NaN,"22,842,000","45,657,000",NaN,NaN,NaN,Islam,SDN
+Suriname,Americas,97,44,"308,000","613,000",NaN,NaN,NaN,Christianity,SUR
+Sweden,Europe,3,5,"5,195,000","10,467,000",12,5,28,Christianity,SWE
+Switzerland,Europe,4,13,"4,377,000","8,691,000",NaN,NaN,NaN,Christianity,CHE
+Syrian Arab Republic,Asia,127,152,"10,643,000","21,324,000",NaN,NaN,NaN,Islam,SYR
+Tajikistan,Asia,68,114,"5,288,000","10,390,000",NaN,19,26.4,Islam,TJK
+Thailand,Asia,73,79,"36,752,000","71,702,000",NaN,NaN,NaN,Buddhism,THA
+Timor-Leste,Asia,99,56,"647,000","1,321,000",13.9,46.4,58.8,Christianity,TLS
+Togo,Africa,150,91,"4,300,000","8,657,000",NaN,12.7,25.1,Christianity,TGO
+Tonga,Oceania,115,NaN,"54,000","106,000",3.2,12.9,21.2,Christianity,TON
+Trinidad and Tobago,Americas,69,37,"773,000","1,526,000",19,5.7,30.2,Christianity,TTO
+Tunisia,Africa,62,120,"6,206,000","12,263,000",NaN,NaN,NaN,Islam,TUN
+Turkmenistan,Asia,NaN,NaN,"3,200,000","6,342,000",NaN,3.4,12,Islam,TKM
+Tuvalu,Oceania,NaN,NaN,"5,000","11,000",11.4,26.8,37,Christianity,TUV
+Turkiye,Asia,59,124,"42,286,000","84,775,000",NaN,11,38,Islam,TUR
+Uganda,Africa,141,61,"23,153,000","45,854,000",54.8,34.6,55.5,Christianity,UGA
+Ukraine,Europe,,81,"23,384,000","43,531,000",5,7.6,26,Christianity,UKR
+United Arab Emirates,Asia,13,68,"2,853,000","9,365,000",NaN,NaN,NaN,Islam,ARE
+United Kingdom of Great Britain and Northern Ireland,Europe,31,22,"34,042,000","67,281,000",7,5,29,Christianity,GBR
+United Republic of Tanzania,Africa,134,64,"32,171,000","63,588,000",NaN,29.6,46.2,Christianity,TZA
+United States of America,Americas,45,27,"170,056,000","336,998,000",NaN,NaN,NaN,Christianity,USA
+Uruguay,Americas,56,72,"1,767,000","3,426,000",NaN,3.1,16.8,Christianity,URY
+Uzbekistan,Asia,74,58,"17,030,000","34,081,000",NaN,NaN,NaN,Islam,UZB
+Vanuatu,Oceania,147,111,"159,000","319,000",33,44,60,Christianity,VUT
+Venezuela (Bolivarian Republic of),Americas,137,91,"14,243,000","28,200,000",NaN,NaN,NaN,Christianity,VEN
+Viet Nam,Asia,78,83,"49,332,000","97,468,000",9,8.9,32,Folk,VNM
+Yemen,Asia,172,155,"16,313,000","32,982,000",NaN,NaN,NaN,Islam,YEM
+Zambia,Africa,141,62,"9,864,000","19,473,000",NaN,25.3,42.2,Christianity,ZMB
+Zimbabwe,Africa,140,50,"8,560,000","16,341,000",NaN,19,44,Christianity,ZWE
+`;
+
+
+const columnLabels = {
+  "country": "Country",
+  "UN_Region": "Region",
+  "Majority_Religion": "Religion",
+  "Gender_Inequality_Index": "Gender Inequality Index",
+  "Global_Gender_Gap_Index": "Global Gender Gap Index",
+  "Female_Population": "Female Population",
+  "Total_Population": "Total Population",
+  "Lifetime_Non-Partner_sexual_Violence": "Lifetime Non-Partner Sexual Violence",
+  "Physical_Partner_Violence_in_12_months": "Physical Partner Violence (past 12 months)",
+  "Lifetime_Physical_Partner_Violence": "Lifetime Physical Partner Violence"
+};
+
+const data = d3.csvParse(csvData);
+
+const statSelect = d3.select("#statSelect");
+Object.keys(columnLabels).forEach(key => {
+  if (!["country","UN_Region","Majority_Religion"].includes(key)) {
+    statSelect.append("option")
+      .attr("value", key)
+      .text(columnLabels[key]);
+  }
+});
+
+document.getElementById("findBtn").addEventListener("click", () => {
+  const scope = document.getElementById("scopeSelect").value;
+  const direction = document.getElementById("directionSelect").value;
+  const stat = document.getElementById("statSelect").value;
+
+  let grouped = [];
+  if (scope === "country") {
+    grouped = data.map(d => ({
+      name: d.country,
+      value: parseFloat(d[stat])
+    }));
+  } else {
+    const groupMap = {};
+    data.forEach(d => {
+      const key = d[scope];
+      const val = parseFloat(d[stat]);
+      if (!isNaN(val)) {
+        if (!groupMap[key]) groupMap[key] = [];
+        groupMap[key].push(val);
+      }
+    });
+    grouped = Object.keys(groupMap).map(k => ({
+      name: k,
+      value: d3.mean(groupMap[k])
+    }));
+  }
+
+  grouped = grouped.filter(d => !isNaN(d.value));
+  if (grouped.length === 0) {
+    document.getElementById("result").innerText = "No data available for this selection.";
+    return;
+  }
+
+  grouped.sort((a, b) => direction === "lowest" ? a.value - b.value : b.value - a.value);
+  const best = grouped[0];
+  
+  document.getElementById("result").innerText =
+    `${columnLabels[scope]} with the ${direction} ${columnLabels[stat]}: ${best.name} (${best.value})`;
+});
+</script>
+
+</body>
+</html>
